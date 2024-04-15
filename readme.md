@@ -22,3 +22,19 @@ pip install -r requirements.txt
 ```
 python manage.py runserver
 ```
+
+- secret_setting.py
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "SteamChart",
+        "USER": "root", # 본인 mysql user
+        "PASSWORD": "", # 본인 mysql password
+        "HOST": "127.0.0.1",
+        "PORT": 3306,
+    }
+}
+
+SECRET_KEY = {
+    # django settings.py SECRET_KEY 입력하시면 됩니다.
+}
