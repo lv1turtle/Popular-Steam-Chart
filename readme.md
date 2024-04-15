@@ -24,6 +24,7 @@ python manage.py runserver
 ```
 
 - secret_setting.py
+```
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
@@ -34,7 +35,10 @@ DATABASES = {
         "PORT": 3306,
     }
 }
+```
 
+```
 SECRET_KEY = {
     # django settings.py SECRET_KEY 입력하시면 됩니다.
 }
+```
