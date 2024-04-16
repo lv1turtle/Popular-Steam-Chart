@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
-#from secret_settings import *
+from . import secret_settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,28 +79,17 @@ WSGI_APPLICATION = "popcat.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # default
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+"""
 
 # mysql
-"""
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "SteamChart",
-        "USER": "root", # 본인 mysql user
-        "PASSWORD": "zdigitals1", # 본인 mysql password
-        "HOST": "127.0.0.1",
-        "PORT": 3306,
-    }
-}
-"""
-
+DATABASES = secret_settings.DATABASES
 
 
 # Password validation

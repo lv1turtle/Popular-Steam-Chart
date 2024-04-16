@@ -47,28 +47,29 @@
     }
     ```
 
-- MySQL Sample Data 삽입 ( 선택 사항 )
-  1. MySQL 내 DB - SteamChart 생성 
-    # mysql 진입
+- MySQL 내 DB - SteamChart 생성
+    - mysql 진입
     `mysql -u root -p`
 
-    # DB 생성
+    - DB 생성
     `CREATE DATABASE SteamChart CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;`
 
-    # mysql 나오기
-    ctrl-z 
+    - mysql 나오기
+    `ctrl-z `
 
-  2. Migration을 통한 DB 테이블 생성
+  - Migration을 통한 DB 테이블 생성
     `python manage.py migrate`
 
-  3. Sample data 추가
-    # mysql 진입
+- MySQL Sample Data 삽입 ( 선택 사항 )
+
+  - Sample data 생성
+    - mysql 진입
     `mysql -u root -p`
 
-    # DB 선택
+    - DB 선택
     `use SteamChart;`
 
-    # Sample Data insert
+    - Sample Data insert
     `source sample.sql`
 
 - 프로젝트로 이동 & 서버 실행
