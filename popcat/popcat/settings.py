@@ -9,9 +9,8 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
-from . import secret_setting
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +20,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = secret_setting.SECRET_KEY
+SECRET_KEY = os.environ.get("SECRET_KEY", "KDT")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get("DEBUG", default=1))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get(
+    "DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1 [::1]"
+).split(" ")
 
 
 # Application definition
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "chart.apps.ChartConfig",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -75,7 +77,29 @@ WSGI_APPLICATION = "popcat.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = secret_setting.DATABASES
+# default
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+# mysql
+"""
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "SteamChart",
+        "USER": "root", # 본인 mysql user
+        "PASSWORD": "", # 본인 mysql password
+        "HOST": "127.0.0.1",
+        "PORT": 3306,
+    }
+}
+"""
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
