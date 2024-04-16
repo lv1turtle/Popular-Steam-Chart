@@ -1,7 +1,17 @@
+{% if games %}
+<ul>
+    {% for game in games %}
+        <li>{{game}}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p> games is nothing </p>
+{% endif %}
+
 {% if topsellers %}
 <ul>
-    {% for game in topsellers %}
-        <li>{{game}}</li>
+    {% for cdate in topsellers %}
+        <li>{{cdate}}</li>
     {% endfor %}
 </ul>
 {% else %}
@@ -16,4 +26,14 @@
 </ul>
 {% else %}
 <p> Category is nothing </p>
+{% endif %}
+
+{% if reviewers %}
+<ul>
+    {% for count in reviewers %}
+        <li>{{count}}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p> Reviewer is nothing </p>
 {% endif %}
