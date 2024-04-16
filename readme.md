@@ -22,24 +22,14 @@
     `cd popcat`
 
 - MySQL DB 연동
-  - `popcat/setting.py`의 주석 제거 및 수정
+  - `popcat/secret_settings.py`에서 user, pw 작성해주시면 됩니다.
     ```
-    # default
-    """
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-    """
-
     # mysql
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.mysql",
             "NAME": "SteamChart",
-            "USER": "root", # 본인 mysql user
+            "USER": "", # 본인 mysql user
             "PASSWORD": "", # 본인 mysql password
             "HOST": "127.0.0.1",
             "PORT": 3306,
