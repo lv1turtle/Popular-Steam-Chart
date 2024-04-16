@@ -22,7 +22,8 @@ class GameCategory(models.Model):
         return f"카테고리명:{self.category}"
 
 class GameReviewers(models.Model):
-    reviewers = models.IntegerField(default=0)
+    game = models.ForeignKey(Game, related_name="gamereviewers", on_delete=models.CASCADE) # 게임 id
+    reviewers = models.IntegerField(default=0) # 리뷰어 수
     
     def __str__(self):
         return f"리뷰어 수:{self.reviewers}"

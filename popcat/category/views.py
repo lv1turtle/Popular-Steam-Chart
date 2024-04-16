@@ -9,9 +9,9 @@ def index(request):
     reviewers_list = GameReviewers.objects.all()
     
     context = {
-        'games': topsellers_list,
+        'games': game_list,
         'topsellers': topsellers_list,
         'categories': category_list,
-        'reviewers': topsellers_list
+        'reviewers': reviewers_list
     }
     return render(request,'category/index.html',context)
