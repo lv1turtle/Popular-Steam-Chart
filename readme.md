@@ -18,27 +18,35 @@ py -m venv {venv_name}
 pip install -r requirements.txt
 ```
 
-- 서버 실행
+- MySQL DB 연동
+  - `popcat/popcat/setting.py`의 주석 제거 및 수정
+    ```
+    # default
+    """
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+    """
+
+    # mysql
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": "SteamChart",
+            "USER": "root", # 본인 mysql user
+            "PASSWORD": "", # 본인 mysql password
+            "HOST": "127.0.0.1",
+            "PORT": 3306,
+        }
+    }
+    ```
+
+- 프로젝트로 이동 & 서버 실행
 ```
+cd popcat
 python manage.py runserver
 ```
 
-- secret_setting.py
-```
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "SteamChart",
-        "USER": "root", # 본인 mysql user
-        "PASSWORD": "", # 본인 mysql password
-        "HOST": "127.0.0.1",
-        "PORT": 3306,
-    }
-}
-```
-
-```
-SECRET_KEY = {
-    # django settings.py SECRET_KEY 입력하시면 됩니다.
-}
-```
