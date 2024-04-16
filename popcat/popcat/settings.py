@@ -78,6 +78,7 @@ WSGI_APPLICATION = "popcat.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # default
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -85,20 +86,20 @@ DATABASES = {
     }
 }
 
-# mysql
 """
+# mysql
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "SteamChart",
-        "USER": "root", # 본인 mysql user
+        "USER": "", # 본인 mysql user
         "PASSWORD": "", # 본인 mysql password
         "HOST": "127.0.0.1",
         "PORT": 3306,
     }
 }
 """
-
 
 
 # Password validation
