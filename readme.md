@@ -21,8 +21,14 @@
 - popcat으로 이동
     `cd popcat`
 
-- MySQL DB 연동
-  - `popcat/secret_settings.py`에서 user, pw 작성해주시면 됩니다.
+- 프로젝트로 이동 & 서버 실행
+    ```
+    python manage.py runserver
+    ```
+
+
+## MySQL DB 연동
+- `popcat/secret_settings.py`를 생성해서 user, pw 작성해주시면 됩니다.
     ```
     # mysql
     DATABASES = {
@@ -36,6 +42,9 @@
         }
     }
     ```
+
+    ( gitignore에 `secret_settings.py` 추가했으나 작동이 안되는 경우
+    `git rm -r --cached`를 진행해서 캐시 삭제하고 add 해주세요. )
 
 - MySQL 내 DB - SteamChart 생성
     - mysql 진입
@@ -61,9 +70,3 @@
 
     - Sample Data insert
     `source sample.sql`
-
-- 프로젝트로 이동 & 서버 실행
-    ```
-    python manage.py runserver
-    ```
-
