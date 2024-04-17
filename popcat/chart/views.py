@@ -34,4 +34,16 @@ def postreviewsData(request):
                 tot_reviews=data[2] + data[3],
             )
             reviewers.save()
+    
     return HttpResponse(f"{topseller_data}")
+
+
+def test_graph():
+    
+    print('hello 안녕하세요 ')
+    이건 그냥 테스트 하는 겁니다
+    
+    
+    return 
+
+test_graph()
