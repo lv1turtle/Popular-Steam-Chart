@@ -18,22 +18,3 @@
 <p> TopSeller Game is nothing </p>
 {% endif %}
 
-{% if categories %}
-<ul>
-    {% for category in categories %}
-        <li>{{category}}</li>
-    {% endfor %}
-</ul>
-{% else %}
-<p> Category is nothing </p>
-{% endif %}
-
-{% if reviewers %}
-<ul>
-    {% for count in reviewers %}
-        <li>{{count}}</li>
-    {% endfor %}
-</ul>
-{% else %}
-<p> Reviewer is nothing </p>
-{% endif %}
