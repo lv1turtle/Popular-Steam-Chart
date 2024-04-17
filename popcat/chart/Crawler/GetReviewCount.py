@@ -32,21 +32,16 @@ def GetReviewCount():
     # 리뷰수 가져오기
     # 스팀 리뷰수 그래프를 그리는 데이터 appreviewhistogram
     for i in range(len(gameQueue)):
-        driver.get(
-            "https://store.steampowered.com/appreviewhistogram/{}".format(
-                gameQueue[i][0]
-            )
-        )
+        driver.get("https://store.steampowered.com/appreviewhistogram/{}".format(gameQueue[i][0]))
         time.sleep(3)
         json_data = driver.find_element(By.TAG_NAME, "pre").text
         data = json.loads(json_data)
         # print(gameQueue[i])
         if len(data["results"]["recent"]) > 1:
-            gameQueue[i].append(
-                data["results"]["recent"][-2]["recommendations_up"]
-                + data["results"]["recent"][-2]["recommendations_down"]
-            )
+            gameQueue[i].append(data["results"]["recent"][-2]["recommendations_up"])
+            gameQueue[i].append(data["results"]["recent"][-2]["recommendations_down"])
         else:
+            gameQueue[i].append(0)
             gameQueue[i].append(0)
     # 가져온 데이터 출력
     return gameQueue
