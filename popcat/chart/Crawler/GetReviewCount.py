@@ -12,7 +12,11 @@ def GetReviewCount():
     actions = ActionChains(driver)
 
     # 100위 가져오기
-    driver.get("https://store.steampowered.com/search/?filter=topsellers&os=win")
+    driver.get("https://store.steampowered.com/search/?supportedlang=koreana&category1=998&os=win&filter=globaltopsellers&ndl=1")
+    driver.implicitly_wait(1)
+    driver.find_element(By.XPATH, '//*[@id="additional_search_options"]/div[5]/div[1]').click()
+    driver.implicitly_wait(1)
+    driver.find_element(By.XPATH, '//*[@id="narrow_category1"]/div[1]/span').click()
     driver.implicitly_wait(3)
     # 리스트 개수 채우기위한 스크롤 아래로
     actions.send_keys(Keys.END).perform()
@@ -32,11 +36,7 @@ def GetReviewCount():
     # 리뷰수 가져오기
     # 스팀 리뷰수 그래프를 그리는 데이터 appreviewhistogram
     for i in range(len(gameQueue)):
-        driver.get(
-            "https://store.steampowered.com/appreviewhistogram/{}".format(
-                gameQueue[i][0]
-            )
-        )
+        driver.get("https://store.steampowered.com/appreviewhistogram/{}".format(gameQueue[i][0]))
         time.sleep(3)
         json_data = driver.find_element(By.TAG_NAME, "pre").text
         data = json.loads(json_data)
@@ -47,5 +47,7 @@ def GetReviewCount():
         else:
             gameQueue[i].append(0)
             gameQueue[i].append(0)
+        print(gameQueue[i])
     # 가져온 데이터 출력
     return gameQueue
+GetReviewCount()
