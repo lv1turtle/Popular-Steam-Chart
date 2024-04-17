@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from .Crawler.GetReviewCount import GetReviewCount
+from .Crawler.SteamTopSeller import TopSeller
 from .models import *
 from django.utils import timezone
 
@@ -9,7 +10,7 @@ def index(request):
 
 
 ## 크롤 데이터 저장
-def postCrawlData(request):
+def postreviewsData(request):
     data_Queue = GetReviewCount()
     for data in data_Queue:
         # game_name : 신규 -> 신규 저장
