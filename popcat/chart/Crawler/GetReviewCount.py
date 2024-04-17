@@ -12,9 +12,9 @@ def GetReviewCount():
     actions = ActionChains(driver)
 
     # 100위 가져오기
-    driver.get("https://store.steampowered.com/search/?supportedlang=koreana&category1=998&os=win&filter=globaltopsellers&ndl=1")
+    driver.get("https://store.steampowered.com/search/?os=win&filter=topsellers&ndl=1")
     driver.implicitly_wait(1)
-    driver.find_element(By.XPATH, '//*[@id="additional_search_options"]/div[5]/div[1]').click()
+    driver.find_element(By.XPATH, '//*[@id="additional_search_options"]/div[3]/div[1]').click()
     driver.implicitly_wait(1)
     driver.find_element(By.XPATH, '//*[@id="narrow_category1"]/div[1]/span').click()
     driver.implicitly_wait(3)
