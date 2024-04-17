@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from django.utils import timezone
 
 
 class Game(models.Model):
@@ -30,6 +31,7 @@ class GameReviewers(models.Model):
     pos_reviews = models.IntegerField(default=0)  # 긍정 리뷰어 수
     neg_reviews = models.IntegerField(default=0)  # 부정 리뷰어 수
     tot_reviews = models.IntegerField(default=0)  # 리뷰어 수 총합
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"리뷰어 수:{self.tot_reviews}"
