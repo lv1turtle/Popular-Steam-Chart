@@ -42,11 +42,10 @@ def GetReviewCount():
         data = json.loads(json_data)
         # print(gameQueue[i])
         if len(data["results"]["recent"]) > 1:
-            gameQueue[i].append(
-                data["results"]["recent"][-2]["recommendations_up"]
-                + data["results"]["recent"][-2]["recommendations_down"]
-            )
+            gameQueue[i].append(data["results"]["recent"][-2]["recommendations_up"])
+            gameQueue[i].append(data["results"]["recent"][-2]["recommendations_down"])
         else:
+            gameQueue[i].append(0)
             gameQueue[i].append(0)
     # 가져온 데이터 출력
     return gameQueue
