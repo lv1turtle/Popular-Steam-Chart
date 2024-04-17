@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver import Keys, ActionChains
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -13,19 +14,14 @@ from tqdm import tqdm
 def TopSeller():
     links = []
     with webdriver.Chrome(service=Service(ChromeDriverManager().install())) as driver:
-        driver.get("https://store.steampowered.com/charts/topselling/global")
+        driver.get("https://store.steampowered.com/search/?category1=998&filter=globaltopsellers&ndl=1")
+        actions = ActionChains(driver)
         driver.implicitly_wait(10)
-        for i in range(1, 101):
-            link = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        '//*[@id="page_root"]/div[3]/div/div/div/div[3]/table/tbody/tr[{}]/td[3]/a'.format(
-                            i
-                        ),
-                    )
-                )
-            )
+        actions.send_keys(Keys.END).perform()
+        driver.implicitly_wait(3)
+        actions.send_keys(Keys.END).perform()
+        for i in tqdm(range(1,101)):
+            link = WebDriverWait(driver,30).until(EC.presence_of_element_located((By.XPATH, '//*[@id="search_resultsRows"]/a[{}]'.format(i))))
             links.append(link.get_attribute("href"))
 
     tag_list = {}
