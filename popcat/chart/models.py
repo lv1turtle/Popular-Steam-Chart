@@ -5,6 +5,7 @@ from datetime import datetime
 class Game(models.Model):
     game_name = models.CharField(max_length=255)  # 게임 이름
     price = models.IntegerField(default=0)
+    categories = models.CharField(max_length=1000, default="")  # 카데고리
 
     def __str__(self):
         return f"게임 이름:{self.game_name}"
