@@ -3,5 +3,5 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    # path("test/", views.postCrawlData, name="get_data"),
+    path("test/", views.postCrawlData, name="get_data"),
 ]
