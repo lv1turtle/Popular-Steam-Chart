@@ -14,13 +14,9 @@ from tqdm import tqdm
 def TopSeller():
     links = []
     with webdriver.Chrome(service=Service(ChromeDriverManager().install())) as driver:
-        driver.get("https://store.steampowered.com/search/?category1=998&filter=globaltopsellers&ndl=1")
-        actions = ActionChains(driver)
+        driver.get("https://store.steampowered.com/search/?os=win&filter=topsellers&ndl=1")
         driver.implicitly_wait(10)
-        actions.send_keys(Keys.END).perform()
-        driver.implicitly_wait(3)
-        actions.send_keys(Keys.END).perform()
-        for i in tqdm(range(1,101)):
+        for i in tqdm(range(1,11)):
             link = WebDriverWait(driver,30).until(EC.presence_of_element_located((By.XPATH, '//*[@id="search_resultsRows"]/a[{}]'.format(i))))
             links.append(link.get_attribute("href"))
 
