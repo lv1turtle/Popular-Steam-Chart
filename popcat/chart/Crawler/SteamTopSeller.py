@@ -17,7 +17,11 @@ def TopSeller():
         driver.get(
             "https://store.steampowered.com/search/?os=win&filter=topsellers&ndl=1"
         )
-        driver.implicitly_wait(10)
+        actions = ActionChains(driver)
+        driver.implicitly_wait(10)    
+        actions.send_keys(Keys.END).perform()
+        driver.implicitly_wait(3)
+        actions.send_keys(Keys.END).perform()
         for i in tqdm(range(1, 21)):
             link = WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located(

@@ -3,11 +3,58 @@ from .Crawler.GetReviewCount import GetReviewCount
 from .Crawler.SteamTopSeller import TopSeller
 from .models import *
 from django.utils import timezone
-
+from django.shortcuts import render
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.views.generic import View
 
 def index(request):
     return HttpResponse("Pop Category Chart, in here")
 
+# https://codepen.io/pen -> highchart 사용했습니다.
+# https://dowtech.tistory.com/3 -> 참고했어요
+# 태그 별 순위 기능 구현 (2-1)
+class RankByTagAPIView(APIView):
+    authentication_classes = []
+    permission_classes = []
+    
+    def get(self, request):
+        topsellers_list = TopSellers.objects.all()
+        
+        # 리뷰 수에 비례하여 태그에 가중치를 부여한 {tag:value} dictionary
+        tot_tag = {} # 총 리뷰 수 기준
+        pos_tag = {} # 긍정 리뷰 수 기준
+        neg_tag = {} # 부정 리뷰 수 기준
+        
+        for topseller in topsellers_list :
+            # topsellers에 포함된 game을 선택
+            game = Game.objects.get(id = topseller.game_id)
+            # 선택한 game에 해당하는 리뷰 수를 조회
+            reviewers = GameReviewers.objects.filter(game_id = game.id) & GameReviewers.objects.filter(created_at = topseller.created_at)
+            reviewers = reviewers[0]
+            
+            categories = game.categories.split(',')
+            for category in categories :
+                category = category.replace(" ","")
+                # dict에 추가할 때, 리뷰 수에 비례한 가중치를 부여
+                tot_tag[category] = tot_tag.get(category, 0) + reviewers.tot_reviews
+                pos_tag[category] = pos_tag.get(category, 0) + reviewers.pos_reviews
+                neg_tag[category] = neg_tag.get(category, 0) + reviewers.neg_reviews
+        
+        # data 전달 형식
+        tag = []
+        for key, value in tot_tag.items() :
+            tag.append({ 'name' : key, 'y' : value})
+        
+        data = {
+            'tags': tag
+        }
+        
+        return Response(data)
+
+class TagView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request,'chart/tag.html')
 
 ## 크롤 데이터 저장
 def postreviewsData(request):
