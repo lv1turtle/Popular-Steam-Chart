@@ -50,4 +50,3 @@ def GetReviewCount():
         print(gameQueue[i])
     # 가져온 데이터 출력
     return gameQueue
-GetReviewCount()
