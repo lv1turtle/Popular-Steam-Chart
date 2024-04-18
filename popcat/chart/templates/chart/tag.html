@@ -53,15 +53,18 @@
                         filter: {
                             operator: '>',
                             property: 'percentage',
-                            value: 10
+                            value: 5
                         }
                     }]
                 }
             },
+            // insert data
             series: [
                 {
-                    name: 'Score',
+                    // data의 이름
+                    name: 'Reviews',
                     colorByPoint: true,
+                    // {'name': ... , 'y': ...} 형식으로 여러 개를 담아 list에 넣어 전달
                     data: data.tags
                 }
             ]
