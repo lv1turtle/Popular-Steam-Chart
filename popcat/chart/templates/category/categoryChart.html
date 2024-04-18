@@ -155,7 +155,7 @@
                                 enabled: true,
                                 distance: -60,
                                 formatter: function() {
-                                    return Highcharts.numberFormat(this.y, 0, '.', ',')+" ￦";
+                                    // return Highcharts.numberFormat(this.y, 0, '.', ',')+" ￦";
                                 },
                                 style: {
                                     fontSize: '1.2em',
@@ -167,7 +167,7 @@
                                 click: function(event) {
                                     // 클릭한 데이터 포인트의 정보 출력
                                     getByGameList(event.point.name)
-                                    console.log('Clicked point:', event.point.name, event.point.y);
+                                    // console.log('Clicked point:', event.point.name, event.point.y);
                                 }
                             }
                         }
