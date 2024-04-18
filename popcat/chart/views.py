@@ -14,6 +14,8 @@ def index(request):
 # https://codepen.io/pen -> highchart 사용했습니다.
 # https://dowtech.tistory.com/3 -> 참고했어요
 # 태그 별 순위 기능 구현 (2-1)
+
+# /api/tag -> 데이터를 보내주는 api 확인용
 class RankByTagAPIView(APIView):
     authentication_classes = []
     permission_classes = []
@@ -40,10 +42,13 @@ class RankByTagAPIView(APIView):
                 tot_tag[category] = tot_tag.get(category, 0) + reviewers.tot_reviews
                 pos_tag[category] = pos_tag.get(category, 0) + reviewers.pos_reviews
                 neg_tag[category] = neg_tag.get(category, 0) + reviewers.neg_reviews
-        
+
+        # 상위 10개만 추출하기 위해 value 기준 내림차순 정렬
+        tot_tag = sorted(tot_tag.items(), key=lambda item:item[1], reverse=True)
         # data 전달 형식
         tag = []
-        for key, value in tot_tag.items() :
+        # sort로 인해 list로 변환됐으므로 itmes()를 사용하지 않음
+        for key, value in tot_tag[0:10] :
             tag.append({ 'name' : key, 'y' : value})
         
         data = {
@@ -52,6 +57,7 @@ class RankByTagAPIView(APIView):
         
         return Response(data)
 
+# /tag -> 실제로 chart를 그려줌
 class TagView(View):
     def get(self, request, *args, **kwargs):
         return render(request,'chart/tag.html')

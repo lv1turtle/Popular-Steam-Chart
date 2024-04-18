@@ -5,6 +5,7 @@
   <title>Django Highcharts Example</title>
 </head>
 <body>
+  <!-- RankByTagAPIView에서 보낸 데이터를 가져옴 -->
   <div id="container" data-url="{% url 'tag_api' %}"></div>
   <script src="https://code.highcharts.com/highcharts.js"></script>
   <script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -21,23 +22,25 @@
                 type: 'pie'
             },
             title: {
-                text: 'Popular by Categories'
+                text: 'Popularity by Categories'
             },
+            // value값 뒤에 붙일 값 ex) %
             tooltip: {
-                valueSuffix: '%'
+                valueSuffix: ''
             },
             subtitle: {
-                text:
-                'Source:<a href="https://www.mdpi.com/2072-6643/11/3/684/htm" target="_default">MDPI</a>'
+                text: 'top 10'
             },
             plotOptions: {
                 series: {
                     allowPointSelect: true,
                     cursor: 'pointer',
+                    // category 이름을 보여주는 기능
                     dataLabels: [{
                         enabled: true,
                         distance: 20
                     }, {
+                        // percentage를 보여주는 기능
                         enabled: true,
                         distance: -40,
                         format: '{point.percentage:.1f}%',
@@ -46,6 +49,7 @@
                             textOutline: 'none',
                             opacity: 0.7
                         },
+                        // value값보다 작은 percentage는 보여주지 않는다.
                         filter: {
                             operator: '>',
                             property: 'percentage',
@@ -56,7 +60,7 @@
             },
             series: [
                 {
-                    name: 'Percentage',
+                    name: 'Score',
                     colorByPoint: true,
                     data: data.tags
                 }
