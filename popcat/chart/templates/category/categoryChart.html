@@ -1,0 +1,202 @@
+
+<!-- 이미지 데이터를 직접 src 속성에 삽입 -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chart.js Example</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <h2>average price by categories</h2>
+    <div method="get" id="Category_search">
+        <input type="date" name="date" id="date_search">
+        <button type="submit" id="search_button">Search</button>
+    </div>
+    <div id="avgChart"></div>
+    <div id="gameChart"></div>
+    <script>
+        $(document).ready(function() {
+            getChartData()   
+            $("#search_button").click(function(event) {
+                getChartData()
+            });
+            function getChartData(){
+                var category_value = $("#category_search").val(); // 입력된 카테고리 값 가져오기
+                var date = $("#date_search").val(); // 입력된 카테고리 값 가져오기
+                if(!date) {
+                    date = getCurrentDate();
+                }
+                console.log(date)
+                var url =  "{% url 'category_chart_by_search_api' 'date' %}".replace('date',date);
+                
+                $.ajax({
+                    url: url,
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data)
+                        updateChart(data)
+                        
+                    }
+                });
+            }
+            function getByGameList(category_value){
+                var date = $("#date_search").val(); // 입력된 카테고리 값 가져오기
+                if(!date) {
+                    date = getCurrentDate();
+                }
+                $.ajax({
+                    url: "{% url 'category_chart_by_game' 'category_value' 'date' %}".replace('date',date).replace("category_value", category_value),
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data)
+                        CreateBarChart(data)
+                    }
+                });
+            }
+            function updateChart(data) {
+                Highcharts.chart('avgChart', {
+                    chart: {
+                        type: 'pie',
+                        width: 800, // Pie 차트의 너비 설정
+                        height: 600 // Pie 차트의 높이 설정
+                    },
+                    title: {
+                        text: 'average price by categories'
+                    },
+                    // value값 뒤에 붙일 값 ex) %
+                    tooltip: {
+                        valueSuffix: ''
+                    },
+                    subtitle: {
+                        text: 'top 100'
+                    },
+                    plotOptions: {
+                        series: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            // category 이름을 보여주는 기능
+                            dataLabels: [{
+                                enabled: true,
+                                distance: 20,
+                                formatter: function() {
+                                    return this.point.name
+                                }
+                            }, {
+                                // percentage를 보여주는 기능
+                                enabled: true,
+                                distance: -60,
+                                formatter: function() {
+                                    return Highcharts.numberFormat(this.y, 0, '.', ',')+" ￦";
+                                },
+                                style: {
+                                    fontSize: '1.2em',
+                                    textOutline: 'none',
+                                    opacity: 0.7
+                                }
+                            }],
+                            events: {
+                                click: function(event) {
+                                    // 클릭한 데이터 포인트의 정보 출력
+                                    getByGameList(event.point.name)
+                                    console.log('Clicked point:', event.point.name, event.point.y);
+                                }
+                            }
+                        }
+                        
+                    },
+                    // insert data
+                    series: [
+                        {
+                            // data의 이름
+                            name: 'average price',
+                            colorByPoint: true,
+                            // {'name': ... , 'y': ...} 형식으로 여러 개를 담아 list에 넣어 전달
+                            data: data.chart_data
+                        }
+                    ]
+                });
+            }
+            function CreateBarChart(data) {
+                var seriesData = data.chart_data.map(function(item) {
+                    return {
+                        name: item.name, // 시리즈의 이름으로 사용될 값
+                        y: item.y // 시리즈의 데이터 값
+                    };
+                });
+                Highcharts.chart('gameChart', {
+                    chart: {
+                        type: 'bar',
+                        width: 800, // Pie 차트의 너비 설정
+                        height: 600 // Pie 차트의 높이 설정
+                    },
+                    title: {
+                        text: 'categories by games'
+                    },
+                    // value값 뒤에 붙일 값 ex) %
+                    xAxis: {
+                        categories: seriesData.map(function(item) {
+                            return item.name; // 시리즈의 이름으로 x 축 레이블 설정
+                        })
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Price'
+                        }
+                    },
+                    plotOptions: {
+                        series: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            // category 이름을 보여주는 기능
+                            dataLabels: [{
+                                enabled: false,
+                                distance: 20,
+                            }, {
+                                // percentage를 보여주는 기능
+                                enabled: true,
+                                distance: 0,
+                                formatter: function() {
+                                    return Highcharts.numberFormat(this.y, 0, '.', ',')+" ￦";
+                                },
+                                style: {
+                                    fontSize: '1.2em',
+                                    textOutline: 'none',
+                                    opacity: 0.7
+                                }
+                            }]
+                        }
+                        
+                    },
+                    // insert data
+                    series: [
+                        {
+                            // data의 이름
+                            name: 'average price',
+                            colorByPoint: true,
+                            // {'name': ... , 'y': ...} 형식으로 여러 개를 담아 list에 넣어 전달
+                            data: data.chart_data
+                        }
+                    ]
+                });
+            }
+            function getCurrentDate() {
+                var currentDate = new Date(); // 현재 날짜와 시간을 포함하는 Date 객체 생성
+                var year = currentDate.getFullYear(); // 연도
+                var month = currentDate.getMonth() + 1; // 월 (0부터 시작하므로 1을 더해줌)
+                var day = currentDate.getDate()-1; // 일
+
+                // 월과 일이 한 자리 숫자일 경우 앞에 0을 붙여 두 자리로 만듦
+                month = month < 10 ? '0' + month : month;
+                day = day < 10 ? '0' + day : day;
+
+                // 현재 날짜를 (YYYY-MM-DD) 형식으로 반환
+                return year + '-' + month + '-' + day;
+            }
+        });
+    </script>
+</body>
+</html>
