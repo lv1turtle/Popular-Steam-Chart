@@ -12,6 +12,14 @@ class Game(models.Model):
     def __str__(self):
         return f"게임 이름:{self.game_name}"
 
+    def get_categories_list(self):
+        categories_set = set(
+            category.strip()
+            for category in self.categories.split(",")
+            if category.strip()
+        )
+        return list(categories_set)
+
 
 class TopSellers(models.Model):
     game = models.ForeignKey(
