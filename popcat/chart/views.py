@@ -85,6 +85,35 @@ def postreviewsData(request):
     return HttpResponse(f"{topseller_data}")
 
 
+
+
+
+
+
+
+
+from django.db.models import Sum
 #2-4
 def NumOfBuyers():
-    #test
+    # 게임 리뷰어 모델에서 게임별로 총 리뷰어 수를 카테고리별로 집계합니다.
+    category_review_totals = GameReviewers.objects.values('game__categories').annotate(
+        total_reviews=Sum('tot_reviews')
+    ).order_by('game__categories')
+    
+    # 카테고리별로 집계된 리뷰어 수를 딕셔너리 형태로 저장합니다.
+    results = {item['game__categories']: item['total_reviews'] for item in category_review_totals}
+    
+    print('------#########  HERE!  ########--------')
+    #print(results)
+    print('------#########  HERE!  ########--------')
+    return results
+
+
+
+
+
+categories = Game.objects.values_list('categories', flat=True).distinct()
+print('222')
+print(categories)
+print('222')
+NumOfBuyers()
