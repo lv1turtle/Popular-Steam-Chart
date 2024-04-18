@@ -26,7 +26,7 @@ def GetReviewCount():
     actions.send_keys(Keys.END).perform()
     # search_resultsRows 리스트 리뷰 검색을 위한 순위 리스트 100
     gameQueue = []
-    for i in range(20):
+    for i in range(5):
         gameLink = (
             driver.find_element(By.ID, "search_resultsRows")
             .find_elements(By.TAG_NAME, "a")[i]

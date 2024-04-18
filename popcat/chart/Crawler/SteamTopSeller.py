@@ -18,11 +18,11 @@ def TopSeller():
             "https://store.steampowered.com/search/?os=win&filter=topsellers&ndl=1"
         )
         actions = ActionChains(driver)
-        driver.implicitly_wait(10)    
+        driver.implicitly_wait(10)
         actions.send_keys(Keys.END).perform()
         driver.implicitly_wait(3)
         actions.send_keys(Keys.END).perform()
-        for i in tqdm(range(1, 21)):
+        for i in tqdm(range(1, 6)):
             link = WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located(
                     (By.XPATH, '//*[@id="search_resultsRows"]/a[{}]'.format(i))
