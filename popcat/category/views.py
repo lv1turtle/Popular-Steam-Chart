@@ -29,9 +29,9 @@ def category_search(request):
             'games': game_rank,  # TopSellers에서 가져온 게임들만 표시
             'category': category
         }
-        return render(request, 'category_results.html', context)
+        return render(request, 'category_search.html', context)
     else:
-        return render(request, 'category_results.html', {})
+        return render(request, 'category_search.html', {})
 
 # class average_price_by_categories(APIView):
 
