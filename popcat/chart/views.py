@@ -7,6 +7,12 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.views.generic import View
+import pandas as pd
+import matplotlib.pyplot as plt
+from django.db.models import Sum
+from django.shortcuts import render
+from io import BytesIO
+import base64
 
 
 def index(request):
@@ -95,7 +101,6 @@ def postreviewsData(request):
             neg_reviews=data[3],
             tot_reviews=data[2] + data[3],
         )
-
     return HttpResponse(f"{topseller_data}")
 
 
@@ -106,28 +111,56 @@ def postreviewsData(request):
 
 
 
-from django.db.models import Sum
-#2-4
-def NumOfBuyers():
-    # 게임 리뷰어 모델에서 게임별로 총 리뷰어 수를 카테고리별로 집계합니다.
-    category_review_totals = GameReviewers.objects.values('game__categories').annotate(
-        total_reviews=Sum('tot_reviews')
-    ).order_by('game__categories')
+
+
+
+
+
+
+
+# 기능 2-4 태그별 구매자수
+def NumOfBuyers_graph():
+    # 게임 리뷰어 모델에서 게임명, 카테고리, 총 리뷰어 수 데이터 가져오기
+    game_data = GameReviewers.objects.values_list(
+        'game__game_name', 
+        'game__categories', 
+        'tot_reviews'
+    )
+
+    # DataFrame 생성, 'Game Name'을 인덱스로 설정
+    df = pd.DataFrame(list(game_data), columns=['Game Name', 'Category', 'Total Reviews'])
+    df.set_index('Game Name', inplace=True)
     
-    # 카테고리별로 집계된 리뷰어 수를 딕셔너리 형태로 저장합니다.
-    results = {item['game__categories']: item['total_reviews'] for item in category_review_totals}
+    # 카테고리별로 Total Reviews 집계
+    category_reviews = df.groupby('Category')['Total Reviews'].sum()
+        
+    # 막대그래프 그리기
+    plt.figure(figsize=(3, 3))  # 그래프 사이즈 조절
+    ax = category_reviews.plot(kind='bar', color='skyblue')
+
+    # 그래프 제목과 라벨 설정
+    # plt.title('Buyers by Category') # 기존의 xlabel을 비활성화 하고, 새로운 텍스트를 x축의 끝에 배치
+    plt.xlabel('')  # 기존 xlabel 제거
+    ax.text(x=len(category_reviews)-0.5, y=-5, s='Category', horizontalalignment='right', verticalalignment='top')
+    plt.ylabel('Buyers')# Y축 라벨 설정
+    plt.xticks(rotation=45)  # 카테고리 이름이 길 경우 회전시키기
+    plt.tight_layout()  # 레이아웃 설정으로 라벨이 잘리는 것 방지
     
-    print('------#########  HERE!  ########--------')
-    #print(results)
-    print('------#########  HERE!  ########--------')
-    return results
+    # 그래프를 BytesIO 객체에 저장
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    graph = base64.b64encode(image_png)
+    graph = graph.decode('utf-8')
+    buffer.close()
+    
+    # 그래프 이미지 데이터를 반환
+    return graph
 
 
+def NumOfBuyers(request):
+    graph = NumOfBuyers_graph()
+    context = {'graph': graph}
+    return render(request, 'chart/buyers_test.html', context)
 
-
-
-categories = Game.objects.values_list('categories', flat=True).distinct()
-print('222')
-print(categories)
-print('222')
-NumOfBuyers()
