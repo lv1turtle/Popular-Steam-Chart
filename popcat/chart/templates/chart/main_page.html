@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Sellers Trend Dashboard By Tag</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2f3136;
+            margin: 0;
+            padding: 0;
+        }
+
+        section {
+            padding: 100px 10px; /* 상하 100px, 좌우 10px의 padding 적용 */
+            text-align: center;
+            margin: 0 auto; /* 가운데 정렬을 위해 추가 */
+            max-width: 960px; /* 최대 너비 설정 */
+            background-color: #fff;
+        }
+
+        /* section 사이에 구분선 스타일 적용 */
+        section + section {
+            border-top: 1px solid #ccc; /* 회색 구분선 */
+            margin-top: 3px; /* 상단 여백 추가 */
+        }
+
+        /* 링크 간격 조절 */
+        section:nth-child(3) nav a {
+            margin: 0 10px; /* 좌우 5px의 마진 적용 */
+        }
+        
+    </style>
+</head>
+<body>
+
+    <header style="background-color: #333; color: #fff; padding: 20px;">
+        <div style="max-width: 960px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+            <div></div>
+            <nav>
+                <a href="http://127.0.0.1:8000/main/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <section>
+        <div style="max-width: 960px; margin: 0 auto;">
+            <h1 style="font-size: 36px; margin-bottom: 20px;">Top Sellers Trend Dashboard By Tag</h1>
+            <p>Chart 표시 공간</p>
+        </div>
+    </section>
+
+    <section>
+        <div style="max-width: 960px; margin: 0 auto;">
+            <h2 style="font-size: 36px; margin-bottom: 20px;">인기있는 태그들</h2>
+            <p>Chart 표시 공간</p>
+            <nav>
+                <a href="http://127.0.0.1:8000/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Average Price</a>
+                <a href="http://127.0.0.1:8000/category/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">About Buyer</a>
+                <a href="http://127.0.0.1:8000/main/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Most Popular Games</a>
+            </nav>
+        </div>
+    </section>
+    <footer style="background-color: #333; color: #fff; padding: 20px; text-align: center;">
+        <div style="max-width: 960px; margin: 0 auto;">
+            <p>프로그래머스 2팀 1조</p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -97,3 +97,7 @@ def postreviewsData(request):
         )
 
     return HttpResponse(f"{topseller_data}")
+
+
+def main(request):
+    return render(request, "chart/main_page.html")
