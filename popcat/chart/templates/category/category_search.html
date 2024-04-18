@@ -1,0 +1,30 @@
+<!-- category_search.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Category Search</title>
+</head>
+<body>
+    <h1>게임 카테고리 검색</h1>
+    <form action="{% url 'category_search' %}" method="get">
+        <label for="category">카테고리:</label>
+        <input type="text" id="category" name="category">
+        <button type="submit">검색</button>
+    </form>
+    {% if category %}
+    <hr>
+    <h2>검색 결과</h2>
+    <ul>
+        {% for game, rank in ranked_games %}
+            {% if rank <= 5 %}
+                <li><strong style="color: red;">{{ rank }}위: </strong>{{ game.game_name }}</li>
+            {% else %}
+                <li>{{ game.game_name }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+</body>
+</html>

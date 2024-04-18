@@ -21,7 +21,7 @@ class TopSellers(models.Model):
     )  # TopSellers에 올라와있던 해당 날짜
 
     def __str__(self):
-        return f"생성 날짜:{self.created_at}"
+        return f"게임 이름: {self.game.game_name} 생성 날짜:{self.created_at}"
 
 
 class GameReviewers(models.Model):
@@ -34,4 +34,4 @@ class GameReviewers(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f"리뷰어 수:{self.tot_reviews}"
+        return f"게임 이름: {self.game.game_name} 리뷰어 수:{self.tot_reviews}"
