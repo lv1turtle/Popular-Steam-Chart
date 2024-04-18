@@ -17,6 +17,22 @@ def index(request):
     
     return render(request,'category/index.html',context)
 
+def category_search(request):
+    if 'category' in request.GET:
+        category = request.GET['category']
+        # 해당 카테고리를 가진 게임 가져오기
+        games = Game.objects.filter(categories__icontains=category)
+        # 해당 게임들의 TopSellers 정보 가져오기
+        top_sellers = TopSellers.objects.filter(game__in=games).order_by('created_at')
+        game_rank = [(ts.game, i + 1) for i, ts in enumerate(top_sellers)]
+        context = {
+            'games': game_rank,  # TopSellers에서 가져온 게임들만 표시
+            'category': category
+        }
+        return render(request, 'category_search.html', context)
+    else:
+        return render(request, 'category_search.html', {})
+
 # class average_price_by_categories(APIView):
 
 def average_price_by_categories(request):
