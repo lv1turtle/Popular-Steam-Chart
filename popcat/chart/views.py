@@ -120,35 +120,31 @@ def postreviewsData(request):
 
 
 
-
-# 기능 2-4 태그별 구매자수
+# 2-4 태그별 구매자수(리뷰수)
 def NumOfBuyers_graph():
-    # 게임 리뷰어 모델에서 게임명, 카테고리, 총 리뷰어 수 데이터 가져오기
-    game_data = GameReviewers.objects.values_list(
-        'game__game_name', 
-        'game__categories', 
-        'tot_reviews'
-    )
+    # Django QuerySet을 사용하여 데이터 가져오기
+    data = GameReviewers.objects.values_list('game__game_name', 'game__categories', 'tot_reviews')
 
-    # DataFrame 생성, 'Game Name'을 인덱스로 설정
-    df = pd.DataFrame(list(game_data), columns=['Game Name', 'Category', 'Total Reviews'])
-    df.set_index('Game Name', inplace=True)
-    
-    # 카테고리별로 Total Reviews 집계
+    # DataFrame으로 변환
+    df = pd.DataFrame(list(data), columns=['Game Name', 'Categories', 'Total Reviews'])
+
+    # 카테고리 분리 및 데이터 정규화
+    # 'FPS, Shooting, Arcade' 같은 문자열을 ','로 분리
+    df = df.drop('Categories', axis=1).join(df['Categories'].str.split(', ', expand=True).stack().reset_index(level=1, drop=True).rename('Category'))
+
+    # 카테고리별 리뷰 수 합계 계산
     category_reviews = df.groupby('Category')['Total Reviews'].sum()
-        
-    # 막대그래프 그리기
-    plt.figure(figsize=(3, 3))  # 그래프 사이즈 조절
-    ax = category_reviews.plot(kind='bar', color='skyblue')
+    category_reviews = category_reviews.sort_values(ascending=False).head(15) # 데이터 정렬
 
-    # 그래프 제목과 라벨 설정
-    # plt.title('Buyers by Category') # 기존의 xlabel을 비활성화 하고, 새로운 텍스트를 x축의 끝에 배치
-    plt.xlabel('')  # 기존 xlabel 제거
-    ax.text(x=len(category_reviews)-0.5, y=-5, s='Category', horizontalalignment='right', verticalalignment='top')
-    plt.ylabel('Buyers')# Y축 라벨 설정
-    plt.xticks(rotation=45)  # 카테고리 이름이 길 경우 회전시키기
-    plt.tight_layout()  # 레이아웃 설정으로 라벨이 잘리는 것 방지
-    
+    # 막대그래프로 표시
+    category_reviews.plot(kind='bar', color='skyblue')
+    #plt.title('Total Reviews by Category')
+    plt.xlabel('Category')
+    plt.ylabel('Total Buyers')
+    plt.xticks(rotation=82, fontsize=7)  # x축 라벨의 폰트 크기를 조정
+    plt.tight_layout()
+    #plt.show() #그래프 새창으로 보기
+
     # 그래프를 BytesIO 객체에 저장
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
@@ -157,10 +153,9 @@ def NumOfBuyers_graph():
     graph = base64.b64encode(image_png)
     graph = graph.decode('utf-8')
     buffer.close()
-    
+
     # 그래프 이미지 데이터를 반환
     return graph
-
 
 def NumOfBuyers(request):
     graph = NumOfBuyers_graph()
@@ -168,6 +163,9 @@ def NumOfBuyers(request):
     return render(request, 'chart/buyers_test.html', context)
 
 
-
 def main(request):
     return render(request, "chart/main_page.html")
+
+
+
+
