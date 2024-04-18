@@ -15,6 +15,7 @@ from io import BytesIO
 import base64
 
 
+
 def index(request):
     return HttpResponse("Pop Category Chart, in here")
 
@@ -28,49 +29,47 @@ def index(request):
 class RankByTagAPIView(APIView):
     authentication_classes = []
     permission_classes = []
-
+    
     def get(self, request):
         topsellers_list = TopSellers.objects.all()
-
+        
         # 리뷰 수에 비례하여 태그에 가중치를 부여한 {tag:value} dictionary
-        tot_tag = {}  # 총 리뷰 수 기준
-        pos_tag = {}  # 긍정 리뷰 수 기준
-
-        for topseller in topsellers_list:
+        tot_tag = {} # 총 리뷰 수 기준
+        pos_tag = {} # 긍정 리뷰 수 기준
+        
+        for topseller in topsellers_list :
             # topsellers에 포함된 game을 선택
-            game = Game.objects.get(id=topseller.game_id)
+            game = Game.objects.get(game_code = topseller.game_code)
             # 선택한 game에 해당하는 리뷰 수를 조회
-            reviewers = GameReviewers.objects.filter(
-                game_id=game.id
-            ) & GameReviewers.objects.filter(
-                created_at__date=topseller.created_at.date()
-            )
+            reviewers = GameReviewers.objects.filter(game_code = game.game_code) & GameReviewers.objects.filter(created_at__date = topseller.created_at.date())
             reviewers = reviewers[0]
-
-            categories = game.categories.split(",")
-            for category in categories:
-                category = category.replace(" ", "")
+            
+            categories = game.categories.split(',')
+            for category in categories :
+                category = category.replace(" ","")
                 # dict에 추가할 때, 리뷰 수에 비례한 가중치를 부여
                 tot_tag[category] = tot_tag.get(category, 0) + reviewers.tot_reviews
                 pos_tag[category] = pos_tag.get(category, 0) + reviewers.pos_reviews
 
         # 상위 10개만 추출하기 위해 value 기준 내림차순 정렬
         # sorted로 인해 list로 변환됨
-        tot_tag = sorted(tot_tag.items(), key=lambda item: item[1], reverse=True)
-
-        if len(tot_tag) > 10:
-            tot_tag = tot_tag[0:10]
-
+        tot_tag = sorted(tot_tag.items(), key=lambda item:item[1], reverse=True)
+        
+        if len(tot_tag) > 10 : tot_tag = tot_tag[0:10]
+        
         # data 전달 형식
         pos = []
         neg = []
-
-        for key, value in tot_tag:
-            pos.append({"name": key, "y": value, "z": pos_tag[key]})
-            neg.append({"name": key, "y": value, "z": value - pos_tag[key]})
-
-        data = {"pos": pos, "neg": neg}
-
+        
+        for key, value in tot_tag :
+            pos.append({ 'name' : key, 'y' : value, 'z' : pos_tag[key]})
+            neg.append({ 'name' : key, 'y' : value, 'z' : value - pos_tag[key]})
+        
+        data = {
+            'pos': pos,
+            'neg': neg
+        }
+        
         return Response(data)
 
 
@@ -78,6 +77,65 @@ class RankByTagAPIView(APIView):
 class TagView(View):
     def get(self, request, *args, **kwargs):
         return render(request, "chart/tag.html")
+
+class BarChartAPIView(APIView):
+    authentication_classes = []
+    permission_classes = []
+    
+    def get(self, request):
+        topsellers_list = TopSellers.objects.all()
+        
+        # 리뷰 수에 비례하여 태그에 가중치를 부여한 {tag:value} dictionary
+        tot_tag = {} # 총 리뷰 수 기준
+        
+        for topseller in topsellers_list :
+            # topsellers에 포함된 game을 선택
+            game = Game.objects.get(game_code = topseller.game_code)
+            # 선택한 game에 해당하는 리뷰 수를 조회
+            reviewers = GameReviewers.objects.filter(game_code = game.game_code) & GameReviewers.objects.filter(created_at__date = topseller.created_at.date())
+            reviewers = reviewers[0]
+            
+            categories = game.categories.split(',')
+            for category in categories :
+                category = category.replace(" ","")
+                # dict에 추가할 때, 리뷰 수에 비례한 가중치를 부여
+                tot_tag[category] = tot_tag.get(category, 0) + reviewers.tot_reviews
+
+        # 상위 10개만 추출하기 위해 value 기준 내림차순 정렬
+        # sorted로 인해 list로 변환됨
+        tot_tag = sorted(tot_tag.items(), key=lambda item:item[1], reverse=True)
+        
+        if len(tot_tag) > 10 : tot_tag = tot_tag[0:10]
+        
+        # tag 간의 유사도를 측정
+        similiar_tags = []
+        for key, value in tot_tag :
+            games = Game.objects.filter(categories__contains=key)
+            tag_data = {}
+            for game in games :
+                categories = game.categories.split(',')
+                for category in categories :
+                    category = category.replace(" ","")
+                    if category != key :
+                        tag_data[category] = tag_data.get(category, 0) + 1
+            # 내림차순 정렬
+            tag_data = sorted(tag_data.items(), key=lambda item:item[1], reverse=True)
+            if len(tag_data) > 10 : tag_data = tag_data[0:10]
+            
+            similiar_tags.append({'name' : key, 'id' : key, 'data': tag_data})
+        
+        # data 전달 형식
+        tot = []
+        
+        for key, value in tot_tag :
+            tot.append({ 'name' : key, 'y' : value, 'drilldown' : key})
+        
+        data = {
+            'tot': tot,
+            'sim' : similiar_tags
+        }
+        
+        return Response(data)
 
 
 ## 크롤 데이터 저장

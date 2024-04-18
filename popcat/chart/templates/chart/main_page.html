@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Top Sellers Trend Dashboard By Tag</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,17 +53,19 @@
     </header>
 
     <section>
-        <div style="max-width: 960px; margin: 0 auto;">
-            <h1 style="font-size: 36px; margin-bottom: 20px;">Top Sellers Trend Dashboard By Tag</h1>
-            <p>Chart 표시 공간</p>
+        <div style="max-width: 960px; margin: 0 auto; text-align: center;">
+            <h1 style="font-size: 36px; margin-bottom: 100px; margin-top: 0;">Top Sellers Trend Dashboard By Tag</h1>
+            <div id="container" data-url="{% url 'barchart_api' %}"></div>
         </div>
     </section>
+
 
     <section>
         <div style="max-width: 960px; margin: 0 auto;">
             <h2 style="font-size: 36px; margin-bottom: 20px;">인기있는 태그들</h2>
             <p>Chart 표시 공간</p>
             <nav>
+                <a href="http://127.0.0.1:8000/tag/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Popular Categories</a>
                 <a href="http://127.0.0.1:8000/category/avg_price/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Average Price</a>
                 <a href="http://127.0.0.1:8000/category/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">About Buyer</a>
                 <a href="http://127.0.0.1:8000/main/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Most Popular Games</a>
@@ -67,6 +77,68 @@
             <p>프로그래머스 2팀 1조</p>
         </div>
     </footer>
-
+    <script>
+        $.ajax({
+            url: $("#container").attr("data-url"),
+            dataType: 'json',
+            success: function (data) {
+                Highcharts.chart('container', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        align: 'left',
+                        text: 'Click the columns to view relational categories'
+                    },
+                    subtitle: {
+                    },
+                    accessibility: {
+                        announceNewData: {
+                            enabled: true
+                        }
+                    },
+                    xAxis: {
+                        type: 'category'
+                    },
+                    yAxis: {
+                
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            borderWidth: 0,
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.y}'
+                            }
+                        }
+                    },
+                
+                    tooltip: {
+                        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                    },
+                
+                    series: [
+                        {
+                            name: 'Categories',
+                            colorByPoint: true,
+                            data: data.tot
+                        }
+                    ],
+                    drilldown: {
+                        breadcrumbs: {
+                            position: {
+                                align: 'right'
+                            }
+                        },
+                        series: data.sim
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
