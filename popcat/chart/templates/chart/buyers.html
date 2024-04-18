@@ -39,6 +39,10 @@
             margin: 0 10px; /* 좌우 5px의 마진 적용 */
         }
         
+        .disabled{
+            pointer-events: none;
+            cursor: default;
+        }
     </style>
 </head>
 <body>
@@ -54,8 +58,10 @@
 
     <section>
         <div style="max-width: 960px; margin: 0 auto; text-align: center;">
-            <h1 style="font-size: 36px; margin-bottom: 100px; margin-top: 0;">Top Sellers Trend Dashboard By Tag</h1>
-            <div id="container" data-url="{% url 'barchart_api' %}"></div>
+            <h1 style="font-size: 36px; margin-bottom: 100px; margin-top: 0;">Buyers by Categories</h1>
+            <div>
+                <img src="data:image/png;base64,{{ graph }}" alt="Category reviews graph">
+            </div>
         </div>
     </section>
 
@@ -66,7 +72,7 @@
             <nav>
                 <a href="http://127.0.0.1:8000/tag/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Popular Categories</a>
                 <a href="http://127.0.0.1:8000/category/avg_price/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Average Price</a>
-                <a href="http://127.0.0.1:8000/buyers/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">About Buyer</a>
+                <a href="http://127.0.0.1:8000/buyers/" style="color: #ccc; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;" class="disabled">About Buyer</a>
                 <a href="http://127.0.0.1:8000/main/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Most Popular Games</a>
             </nav>
         </div>
@@ -76,68 +82,5 @@
             <p>프로그래머스 2팀 1조</p>
         </div>
     </footer>
-    <script>
-        $.ajax({
-            url: $("#container").attr("data-url"),
-            dataType: 'json',
-            success: function (data) {
-                Highcharts.chart('container', {
-                    chart: {
-                        type: 'column'
-                    },
-                    title: {
-                        align: 'left',
-                        text: 'Click the columns to view relational categories'
-                    },
-                    subtitle: {
-                    },
-                    accessibility: {
-                        announceNewData: {
-                            enabled: true
-                        }
-                    },
-                    xAxis: {
-                        type: 'category'
-                    },
-                    yAxis: {
-                
-                    },
-                    legend: {
-                        enabled: false
-                    },
-                    plotOptions: {
-                        series: {
-                            borderWidth: 0,
-                            dataLabels: {
-                                enabled: true,
-                                format: '{point.y}'
-                            }
-                        }
-                    },
-                
-                    tooltip: {
-                        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
-                    },
-                
-                    series: [
-                        {
-                            name: 'Categories',
-                            colorByPoint: true,
-                            data: data.tot
-                        }
-                    ],
-                    drilldown: {
-                        breadcrumbs: {
-                            position: {
-                                align: 'right'
-                            }
-                        },
-                        series: data.sim
-                    }
-                });
-            }
-        });
-    </script>
 </body>
 </html>
