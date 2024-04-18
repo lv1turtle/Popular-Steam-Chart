@@ -2,6 +2,9 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from chart.models import *
 from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.db.models import F
+
 
 # 테스트 용, 마음대로 수정해주세요.
 def index(request):
@@ -33,45 +36,71 @@ def category_search(request):
     else:
         return render(request, 'category/category_search.html', {})
 
-# class average_price_by_categories(APIView):
+class average_price_by_categories(APIView):
 
-def average_price_by_categories(request):
-    print(request)
-    category = "salad"
-    # 검색 조건
-    
-    # 검색
-    game_list =  Game.objects.filter(categories__contains=category)[:100]
-    category_Total_price_dict = {}
-    
-    # 카테고리별 가격
-    for i in game_list :
-        categories = [category.strip() for category in i.categories.split(',')]
-        for category in categories :
-            category_Total_price_dict[category] = category_Total_price_dict.get(category, [0,0,0])
-            category_Total_price_dict[category][0] += i.price
-            category_Total_price_dict[category][1] += 1
-    
-    labels = []
-    sizes = []
-    # 카테고리별 평균값 및 차트세팅
-    if category_Total_price_dict :
-        for category in category_Total_price_dict :
-            category_Total_price_dict[category][2] = category_Total_price_dict[category][0] // category_Total_price_dict[category][1]
-            labels.append(category)
-            sizes.append(category_Total_price_dict[category][2])
-    else :
-        labels.append('NONE')
-        sizes.append(1)
-    # 원형 차트 생성
-    
-
-    data = {
-        "games" : game_list,
-        "dict" : category_Total_price_dict,
-        "labels" : labels,
-        "sizes" : sizes,
-        # "chart" : image_png
-    }
-    return render(request, 'category/categoryChart.html', data)
+    def get(self, request):
+        return render(request, 'category/categoryChart.html')
         
+class Category_chart(APIView) :
+    def get(self, request, *args, **kwargs) :
+        date = kwargs.get('date')
+        if not date :
+            date = timezone.now().date()
+        # 검색
+        game_list = TopSellers.objects.filter(
+            created_at__contains=date
+        ).annotate(
+            game_name=F('game__game_name'),  # game의 game_name 필드를 가져옴
+            game_price=F('game__price'),  # game의 price 필드를 가져옴
+            game_categories=F('game__categories'),  # game의 categories 필드를 가져옴
+        ).values(
+            'game_name', 'game_price', 'game_categories',  # 필요한 필드 선택
+        )[:100]
+        # game_list =  Game.objects.filter(categories__contains=category)[:100]
+        category_Total_price_dict = {}
+        # 카테고리별 가격
+        for i in game_list :
+            categories = [category.strip() for category in i["game_categories"].split(',')]
+            for category in categories :
+                category_Total_price_dict[category] = category_Total_price_dict.get(category, [0,0,0])
+                category_Total_price_dict[category][0] += i["game_price"]
+                category_Total_price_dict[category][1] += 1
+        
+        chart_data = []
+        # 카테고리별 평균값 및 차트세팅
+        if category_Total_price_dict :
+            for category in category_Total_price_dict :
+                category_Total_price_dict[category][2] = category_Total_price_dict[category][0] // category_Total_price_dict[category][1]
+                chart_data.append({'name':category, 'y':category_Total_price_dict[category][2]})
+        else :
+            chart_data.append({"None":0})
+
+        data = {
+            "chart_data": chart_data
+        }
+        return Response(data)
+
+class Category_chart_by_game(APIView) :
+    def get(self, request, *args, **kwargs) :
+        category = kwargs.get('category')
+        date = kwargs.get('date')
+        # 검색
+        game_list = TopSellers.objects.filter(
+            created_at__contains=date,
+            game__categories__contains=category
+        ).annotate(
+            game_name=F('game__game_name'),  # game의 game_name 필드를 가져옴
+            game_price=F('game__price'),  # game의 price 필드를 가져옴
+            game_categories=F('game__categories'),  # game의 categories 필드를 가져옴
+        ).values(
+            'game_name', 'game_price', 'game_categories',  # 필요한 필드 선택
+        )[:10]
+        # 카테고리별 가격
+        chart_data = []
+        for i in game_list :
+            chart_data.append({'name':i["game_name"], 'y':i["game_price"]})
+
+        data = {
+            "chart_data": chart_data
+        }
+        return Response(data)
