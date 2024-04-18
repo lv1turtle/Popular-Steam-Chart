@@ -7,6 +7,13 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.views.generic import View
+import pandas as pd
+import matplotlib.pyplot as plt
+from django.db.models import Sum
+from django.shortcuts import render
+from io import BytesIO
+import base64
+
 
 
 def index(request):
@@ -166,9 +173,57 @@ def postreviewsData(request):
             tot_reviews=data[2] + data[3],
             game_code=top_data[3],
         )
-
     return HttpResponse(f"{topseller_data}")
+
+
+
+
+# 2-4 태그별 구매자수(리뷰수)
+def NumOfBuyers_graph():
+    # Django QuerySet을 사용하여 데이터 가져오기
+    data = GameReviewers.objects.values_list('game__game_name', 'game__categories', 'tot_reviews')
+
+    # DataFrame으로 변환
+    df = pd.DataFrame(list(data), columns=['Game Name', 'Categories', 'Total Reviews'])
+
+    # 카테고리 분리 및 데이터 정규화
+    # 'FPS, Shooting, Arcade' 같은 문자열을 ','로 분리
+    df = df.drop('Categories', axis=1).join(df['Categories'].str.split(', ', expand=True).stack().reset_index(level=1, drop=True).rename('Category'))
+
+    # 카테고리별 리뷰 수 합계 계산
+    category_reviews = df.groupby('Category')['Total Reviews'].sum()
+    category_reviews = category_reviews.sort_values(ascending=False).head(15) # 데이터 정렬
+
+    # 막대그래프로 표시
+    category_reviews.plot(kind='bar', color='skyblue')
+    #plt.title('Total Reviews by Category')
+    plt.xlabel('Category')
+    plt.ylabel('Total Buyers')
+    plt.xticks(rotation=82, fontsize=7)  # x축 라벨의 폰트 크기를 조정
+    plt.tight_layout()
+    #plt.show() #그래프 새창으로 보기
+
+    # 그래프를 BytesIO 객체에 저장
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    graph = base64.b64encode(image_png)
+    graph = graph.decode('utf-8')
+    buffer.close()
+
+    # 그래프 이미지 데이터를 반환
+    return graph
+
+def NumOfBuyers(request):
+    graph = NumOfBuyers_graph()
+    context = {'graph': graph}
+    return render(request, 'chart/buyers_test.html', context)
 
 
 def main(request):
     return render(request, "chart/main_page.html")
+
+
+
+
