@@ -33,7 +33,7 @@ class RankByTagAPIView(APIView):
             # topsellers에 포함된 game을 선택
             game = Game.objects.get(id = topseller.game_id)
             # 선택한 game에 해당하는 리뷰 수를 조회
-            reviewers = GameReviewers.objects.filter(game_id = game.id) & GameReviewers.objects.filter(created_at = topseller.created_at)
+            reviewers = GameReviewers.objects.filter(game_id = game.id) & GameReviewers.objects.filter(created_at__date = topseller.created_at.date())
             reviewers = reviewers[0]
             
             categories = game.categories.split(',')
