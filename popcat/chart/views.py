@@ -85,12 +85,6 @@ def postreviewsData(request):
     return HttpResponse(f"{topseller_data}")
 
 
-def test_graph():
-    
-    print('hello 안녕하세요 ')
-    이건 그냥 테스트 하는 겁니다
-    
-    
-    return 
-
-test_graph()
+#2-4
+def NumOfBuyers():
+    #test
