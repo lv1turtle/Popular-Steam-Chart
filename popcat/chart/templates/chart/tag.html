@@ -1,77 +1,139 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>Django Highcharts Example</title>
+    <meta charset="utf-8">
+    <title>Django Highcharts Example</title>
 </head>
 <body>
-  <!-- RankByTagAPIView에서 보낸 데이터를 가져옴 -->
-  <div id="container" data-url="{% url 'tag_api' %}"></div>
-  <script src="https://code.highcharts.com/highcharts.js"></script>
-  <script src="https://code.highcharts.com/modules/exporting.js"></script>
-  <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/variable-pie.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script>
-    $.ajax({
-      url: $("#container").attr("data-url"),
-      dataType: 'json',
-      success: function (data) {
-        Highcharts.chart('container', {
-            chart: {
-                type: 'pie'
-            },
-            title: {
-                text: 'Popularity by Categories'
-            },
-            // value값 뒤에 붙일 값 ex) %
-            tooltip: {
-                valueSuffix: ''
-            },
-            subtitle: {
-                text: 'top 10'
-            },
-            plotOptions: {
-                series: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    // category 이름을 보여주는 기능
-                    dataLabels: [{
-                        enabled: true,
-                        distance: 20
-                    }, {
-                        // percentage를 보여주는 기능
-                        enabled: true,
-                        distance: -40,
-                        format: '{point.percentage:.1f}%',
-                        style: {
-                            fontSize: '1.2em',
-                            textOutline: 'none',
-                            opacity: 0.7
-                        },
-                        // value값보다 작은 percentage는 보여주지 않는다.
-                        filter: {
-                            operator: '>',
-                            property: 'percentage',
-                            value: 5
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <!-- RankByTagAPIView에서 보낸 데이터를 가져옴 -->
+    <div id="container" data-url="{% url 'tag_api' %}"></div>
+
+    <script>
+        $.ajax({
+            url: $("#container").attr("data-url"),
+            dataType: 'json',
+            success: function (data) {
+                Highcharts.chart('container', {
+                    chart: {
+                        type: 'variablepie'
+                    },
+                    title: {
+                        text: 'Popular categories compared by positive reviews'
+                    },
+                    tooltip: {
+                        headerFormat: '',
+                        pointFormat: '<span style="color:{point.color}">\u25CF</span> <b> {point.name}</b><br/>' +
+                            'Total Reviews : <b>{point.y}</b><br/>' +
+                            'Positive Reviews : <b>{point.z}</b><br/>'
+                    },
+                    plotOptions: {
+                        series: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            // category 이름을 보여주는 기능
+                            dataLabels: [{
+                                enabled: true,
+                                distance: 40
+                            }, {
+                                // percentage를 보여주는 기능
+                                enabled: true,
+                                distance: 0,
+                                format: '{point.percentage:.1f}%',
+                                style: {
+                                    fontSize: '1em',
+                                    textOutline: 'none',
+                                    opacity: 0.7
+                                },
+                                // value값보다 작은 percentage는 보여주지 않는다.
+                                filter: {
+                                    operator: '>',
+                                    property: 'percentage',
+                                    value: 5
+                                }
+                            }]
                         }
+                    },
+                    series: [{
+                        minPointSize: 10,
+                        innerSize: '20%',
+                        zMin: 0,
+                        name: 'reviews',
+                        borderRadius: 5,
+                        data: data.pos
+                        
                     }]
-                }
-            },
-            // insert data
-            series: [
-                {
-                    // data의 이름
-                    name: 'Reviews',
-                    colorByPoint: true,
-                    // {'name': ... , 'y': ...} 형식으로 여러 개를 담아 list에 넣어 전달
-                    data: data.tags
-                }
-            ]
+                });        
+            }
         });
-        
-      }
-    });
-  </script>
+    </script>
+
+    <div id="container1" data-url="{% url 'tag_api' %}"></div>
+
+    <script>
+        $.ajax({
+            url: $("#container1").attr("data-url"),
+            dataType: 'json',
+            success: function (data) {
+                Highcharts.chart('container1', {
+                    chart: {
+                        type: 'variablepie'
+                    },
+                    title: {
+                        text: 'Popular categories compared by negative reviews'
+                    },
+                    tooltip: {
+                        headerFormat: '',
+                        pointFormat: '<span style="color:{point.color}">\u25CF</span> <b> {point.name}</b><br/>' +
+                            'Total Reviews : <b>{point.y}</b><br/>' +
+                            'Negative Reviews : <b>{point.z}</b><br/>'
+                    },
+                    plotOptions: {
+                        series: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            // category 이름을 보여주는 기능
+                            dataLabels: [{
+                                enabled: true,
+                                distance: 40
+                            }, {
+                                // percentage를 보여주는 기능
+                                enabled: true,
+                                distance: 0,
+                                format: '{point.percentage:.1f}%',
+                                style: {
+                                    fontSize: '1em',
+                                    textOutline: 'none',
+                                    opacity: 0.7
+                                },
+                                // value값보다 작은 percentage는 보여주지 않는다.
+                                filter: {
+                                    operator: '>',
+                                    property: 'percentage',
+                                    value: 5
+                                }
+                            }]
+                        }
+                    },
+                    series: [{
+                        minPointSize: 10,
+                        innerSize: '20%',
+                        zMin: 0,
+                        name: 'reviews',
+                        borderRadius: 5,
+                        data: data.neg
+                        
+                    }]
+                });        
+            }
+        });
+    </script>
+
 </body>
 </html>
