@@ -5,22 +5,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import F
 
-
-# 테스트 용, 마음대로 수정해주세요.
-def index(request):
-    game_list = Game.objects.all()
-    topsellers_list = TopSellers.objects.all()
-    reviewers_list = GameReviewers.objects.all()
-
-    context = {
-        "games": game_list,
-        "topsellers": topsellers_list,
-        "reviewers": reviewers_list,
-    }
-
-    return render(request, "category/index.html", context)
-
-
 def category_search(request):
     games = Game.objects.all()
     # 모든 게임의 카테고리 목록 가져오기

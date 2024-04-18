@@ -25,13 +25,13 @@ def index(request):
 # 태그 별 순위 기능 구현 (2-1)
 
 
-# /api/tag -> 데이터를 보내주는 api 확인용
-class RankByTagAPIView(APIView):
-    authentication_classes = []
-    permission_classes = []
-    
-    def get(self, request):
-        topsellers_list = TopSellers.objects.all()
+class TagByDateAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        date = kwargs.get("date")
+        if not date:
+            date = timezone.now().date()
+        
+        topsellers_list = TopSellers.objects.filter(created_at__date = date)
         
         # 리뷰 수에 비례하여 태그에 가중치를 부여한 {tag:value} dictionary
         tot_tag = {} # 총 리뷰 수 기준
@@ -41,7 +41,7 @@ class RankByTagAPIView(APIView):
             # topsellers에 포함된 game을 선택
             game = Game.objects.get(game_code = topseller.game_code)
             # 선택한 game에 해당하는 리뷰 수를 조회
-            reviewers = GameReviewers.objects.filter(game_code = game.game_code) & GameReviewers.objects.filter(created_at__date = topseller.created_at.date())
+            reviewers = GameReviewers.objects.filter(game_code = game.game_code) & GameReviewers.objects.filter(created_at__date = date)
             reviewers = reviewers[0]
             
             categories = game.categories.split(',')
