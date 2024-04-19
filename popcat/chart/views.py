@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.views.generic import View
 import pandas as pd
+from collections import Counter
 import matplotlib.pyplot as plt
 from django.db.models import Sum
 from django.shortcuts import render
