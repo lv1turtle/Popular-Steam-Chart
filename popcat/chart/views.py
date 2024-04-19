@@ -149,7 +149,7 @@ def postreviewsData(request):
 
     for data, top_data in zip(data_Queue, topseller_data):
         cleaned_tag_data = ", ".join(top_data[1])
-        if int(top_data[2]) >= 200000 :
+        if int(top_data[2]) >= 130000 :
             top_data[2] = int(top_data[2]) / 10
         # game_name 순서 일치 여부 확인
         # print(f"data_Queue: {data[1]}")
