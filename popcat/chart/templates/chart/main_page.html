@@ -38,10 +38,6 @@
         section:nth-child(3) nav a {
             margin: 0 10px; /* 좌우 5px의 마진 적용 */
         }
-        .checked {
-            background-color: #90EE90; /* 체크된 상태일 때의 배경색 */
-        }
-
         .checkbox-label.checked {
             background-color: #90EE90; /* 체크된 상태일 때의 배경색 */
         }
@@ -80,11 +76,11 @@
         <br>
         <br>
         <div class="toggles">
-            <input type="checkbox" id="showall" name="showall" style="display: none;">
-            <label for="showall" class="checkbox-label" style="display: inline-block; margin-bottom: 5px; padding: 5px; border:3px solid #707070; cursor: pointer;">All</label>
+            <input type="checkbox" id="showall" name="showall" style="display: none;" checked>
+            <label for="showall" class="checkbox-label" style="background-color: #90EE90; display: inline-block; margin-bottom: 5px; padding: 5px; border:3px solid #707070; cursor: pointer;">All</label>
             {% for category, count in top_categories %}
                 <input type="checkbox" id="{{ category }}" name="category{{ forloop.counter }}" value="{{ category }}" style="display: none;">
-                <label for="{{ category }}" class="checkbox-label" style="display: inline-block; padding: 5px; border:3px solid #707070; cursor: pointer;">{{ category }}</label>
+                <label for="{{ category }}" id="{{ category }}" class="checkbox-label" style="display: inline-block; padding: 5px; border:3px solid #707070; cursor: pointer;">{{ category }}</label>
             {% endfor %}
         <br>
         <br>
@@ -97,33 +93,58 @@
             </ul>
         </div> 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
         <script>
             $(function() {
-                $('input[type="checkbox"]').change(function(){
+                $('.checkbox-label').click(function(){
                     var category = this.id;
                     var get_current = $('.posts .post').filter(function() {
                         return $(this).attr('class').indexOf(category) !== -1;
                     });
-    
+        
                     if ($(this).is(':checked')) {
                         get_current.show(500);
+                        $('.checkbox-label').removeClass('checked'); // 기존에 체크된 라벨의 checked 클래스 제거
+                        $(this).addClass('checked'); 
                     } else {
                         $('.post').not(get_current).hide(500);
                     }
-    
+                    
+        
                     // 클릭된 체크박스에 'checked' 클래스를 추가하고 나머지 체크박스에서는 해당 클래스를 제거
-                    $('input[type="checkbox"]').next().removeClass('checked');
+                $('.checkbox-label').next().removeClass('checked');
                     if ($(this).is(':checked')) {
                         $(this).next().addClass('checked');
+                    } else {
+                        $('input[type="checkbox"]').prop('checked', false);  // 체크가 해제되면 클래스 제거
                     }
                 });
+                
+                $('.checkbox-label').click(function() {
+                    var checkbox = $(this).prev(); // 라벨의 이전 형제 요소, 즉 체크박스
                     
+                    // 체크박스 상태를 토글
+                    checkbox.prop('checked', !checkbox.prop('checked')); 
+                    
+                    // 변경 이벤트 강제 발생
+                    checkbox.trigger('change'); 
+                    
+                    // 배경색 변경
+                    if (checkbox.is(':checked')) {// 기존에 체크된 라벨의 checked 클래스 제거
+                        $(this).addClass('checked'); // 현재 라벨에 checked 클래스 추가
+                    } else {
+                        $('input[type="checkbox"]').prop('checked', false);  // 체크가 해제된 경우 checked 클래스 제거
+                    }
+                });
+                
                 $('#showall').change(function() {
                     if ($(this).is(':checked')) {
                         $('.post').show(500);
                         $('input[type="checkbox"]').prop('checked', false); // 모든 체크박스 해제
                         $('.checkbox-label').removeClass('checked'); // 모든 라벨에서 'checked' 클래스 제거
                         $(this).next().addClass('checked'); // 'Show All' 버튼에 'checked' 클래스 추가
+                    } else {
+                        $(this).next().removeClass('checked'); // 체크가 해제되면 클래스 제거
                     }
                 });
             }); 
