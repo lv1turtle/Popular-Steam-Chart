@@ -1,3 +1,6 @@
+# Popular_Steam_Chart
+We are developing Steam Trend Dashboard by tags for developers
+
 ## 프로젝트 실행 방법
 
 패키지 설치
