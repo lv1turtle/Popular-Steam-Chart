@@ -60,23 +60,69 @@
     </section>
 
 
-    <section>
-        <div style="max-width: 960px; margin: 0 auto;">
-            <h2 style="font-size: 36px; margin-bottom: 20px;">차트</h2>
-            <nav>
-                <a href="http://127.0.0.1:8000/tag/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Popular Categories</a>
-                <a href="http://127.0.0.1:8000/category/avg_price/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Average Price</a>
-                <a href="http://127.0.0.1:8000/buyers/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">About Buyer</a>
-                <a href="http://127.0.0.1:8000/main/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Most Popular Games</a>
-            </nav>
-        </div>
-    </section>
-    <footer style="background-color: #333; color: #fff; padding: 20px; text-align: center;">
-        <div style="max-width: 960px; margin: 0 auto;">
-            <p>프로그래머스 2팀 1조</p>
-        </div>
-    </footer>
-    <script>
+<section>
+    <div style="max-width: 960px; margin: 0 auto;">
+        <h2 style="font-size: 36px; margin-bottom: 20px;">차트</h2>
+        <div id="wrapper">
+            <h1>My Works</h1>
+            </div>
+        <nav>
+            <a href="http://127.0.0.1:8000/tag/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Popular Categories</a>
+            <a href="http://127.0.0.1:8000/category/avg_price/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Average Price</a>
+            <a href="http://127.0.0.1:8000/buyers/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">About Buyer</a>
+        </nav>
+        <br>
+        <br>
+        <div class="toggles">
+            <input type="checkbox" id="showall" name="showall" style="display: none;">
+            <label for="showall" class="checkbox-label" style="display: inline-block; margin-bottom: 5px; padding: 5px; border:3px solid #707070; cursor: pointer;">All</label>
+            {% for category, count in top_categories %}
+                <input type="checkbox" id="{{ category }}" name="category{{ forloop.counter }}" value="{{ category }}" style="display: none;">
+                <label for="{{ category }}" class="checkbox-label" style="display: inline-block; padding: 5px; border:3px solid #707070; cursor: pointer;">{{ category }}</label>
+            {% endfor %}
+        <br>
+        <br>
+        <div class="posts">
+            <ul style="padding-left: 0;">
+                <p style="background-color: #5759c6; color: #fff; padding: 10px; margin-bottom: 5px;"><b>해당 카테고리 게임들의 인기 순위</b></p>
+                {% for game in games %}
+                    <li class="post {{ game.categories }}"style="margin-right: 50px; margin-left: 50px; background-color:  #d1f3ff; padding: 10px; margin-bottom: 5px; list-style-type: none;" > {{ forloop.counter }}. {{ game.game_name }}</li>                    
+                {% endfor %}
+            </ul>
+        </div> 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            $(function() {
+                $('input[type="checkbox"]').change(function(){
+                    var category = this.id;
+                    var get_current = $('.posts .post').filter(function() {
+                        return $(this).attr('class').indexOf(category) !== -1;
+                    });
+    
+                    if ($(this).is(':checked')) {
+                        get_current.show(500);
+                    } else {
+                        $('.post').not(get_current).hide(500);
+                    }
+    
+                    // 클릭된 체크박스에 'checked' 클래스를 추가하고 나머지 체크박스에서는 해당 클래스를 제거
+                    $('input[type="checkbox"]').next().removeClass('checked');
+                    if ($(this).is(':checked')) {
+                        $(this).next().addClass('checked');
+                    }
+                });
+                    
+                $('#showall').change(function() {
+                    if ($(this).is(':checked')) {
+                        $('.post').show(500);
+                        $('input[type="checkbox"]').prop('checked', false); // 모든 체크박스 해제
+                        $('.checkbox-label').removeClass('checked'); // 모든 라벨에서 'checked' 클래스 제거
+                        $(this).next().addClass('checked'); // 'Show All' 버튼에 'checked' 클래스 추가
+                    }
+                });
+            }); 
+        </script>
+        <script>
         $.ajax({
             url: $("#container").attr("data-url"),
             dataType: 'json',

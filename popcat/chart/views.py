@@ -223,7 +223,20 @@ def NumOfBuyers(request):
 
 
 def main(request):
-    return render(request, "chart/main_page.html")
+    all_categories = []
+    for game in Game.objects.all():
+        all_categories.extend(game.categories.split(','))
+
+    category_counts = Counter(all_categories)
+    top_categories = category_counts.most_common(20)
+    games = []
+    games = Game.objects.all()
+
+    context = {
+        'games': games,
+        'top_categories': top_categories
+    }
+    return render(request, 'chart/main_page.html', context)
 
 
 
