@@ -59,22 +59,20 @@
             <h1 style="font-size: 36px; margin-bottom: 100px; margin-top: 0;">Top Sellers Trend Dashboard By Tag</h1>
             <div id="container" data-url="{% url 'barchart_api' %}"></div>
         </div>
+        <br>
+        <br>
+        <nav>
+            <a href="http://127.0.0.1:8000/tag/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Reviews By Tags</a>
+            <a href="http://127.0.0.1:8000/category/avg_price/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Average Price By Tags</a>
+            <a href="http://127.0.0.1:8000/buyers/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Buyers By Tags</a>
+        </nav>
     </section>
 
 
 <section>
+    <h2 style="font-size: 36px; margin-bottom: 50px; margin-top: 0;">Game Search</h2>
+    <p style="font-size: 24px;">Select Tags</p>
     <div style="max-width: 960px; margin: 0 auto;">
-        <h2 style="font-size: 36px; margin-bottom: 20px;">차트</h2>
-        <div id="wrapper">
-            <h1>My Works</h1>
-            </div>
-        <nav>
-            <a href="http://127.0.0.1:8000/tag/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Popular Categories</a>
-            <a href="http://127.0.0.1:8000/category/avg_price/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Average Price</a>
-            <a href="http://127.0.0.1:8000/buyers/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">About Buyer</a>
-        </nav>
-        <br>
-        <br>
         <div class="toggles">
             <input type="checkbox" id="showall" name="showall" style="display: none;" checked>
             <label for="showall" class="checkbox-label" style="background-color: #90EE90; display: inline-block; margin-bottom: 5px; padding: 5px; border:3px solid #707070; cursor: pointer;">All</label>

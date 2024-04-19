@@ -15,6 +15,8 @@ from django.shortcuts import render
 from io import BytesIO
 import base64
 from collections import Counter
+import matplotlib
+matplotlib.use('Agg')
 
 
 def index(request):

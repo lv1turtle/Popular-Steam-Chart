@@ -94,8 +94,3 @@ We are developing Steam Trend Dashboard by tags for developers
   - crawling 실행
     `http://127.0.0.1:8000/test/`
 
-
-## Crawl Data 추가
-- Mysql이나 db.sqlite3에 접속만 가능하다면 문제없이 작동합니다.
-    - 단. 현재 전체 코드에서 Crawler 폴더가 상위폴더에 위치해 있는데, module로 인식을 못해서 chart 내부로 이동해주셔야 정상 작동합니다.
-        - 이 부분은 제 개인적 문제일 수도 있어서 추후에 확인 후 공지 드리겠습니다.
