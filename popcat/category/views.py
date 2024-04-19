@@ -93,8 +93,8 @@ class Category_chart(APIView):
                 )
         else:
             chart_data.append({"None": 0})
-
-        data = {"chart_data": chart_data}
+        chart_data = sorted(chart_data, key=lambda x: x["y"], reverse=True)
+        data = {"chart_data": chart_data[:10]}
         return Response(data)
 
 
