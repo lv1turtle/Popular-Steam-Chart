@@ -32,8 +32,8 @@ We are developing Steam Trend Dashboard by tags for developers
 ### Search for games by tag_list
 ![image](https://github.com/lv1turtle/Popular_Steam_Chart/assets/32154881/bf042597-f7e2-472a-8e9c-dcd33c1fe144)
 
-### Main Page
-![image](https://github.com/lv1turtle/Popular_Steam_Chart/assets/32154881/2c0201c3-2461-461b-bdc7-6343f9b0f7e2)
+### Page Structure
+![image](https://github.com/lv1turtle/Popular_Steam_Chart/assets/32154881/9c22db87-fbf8-4fb6-bad3-22b09a939018)
 
 
 ## 프로젝트 실행 방법
