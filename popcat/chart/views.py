@@ -8,12 +8,15 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.views.generic import View
 import pandas as pd
+from collections import Counter
 import matplotlib.pyplot as plt
 from django.db.models import Sum
 from django.shortcuts import render
 from io import BytesIO
 import base64
-
+from collections import Counter
+import matplotlib
+matplotlib.use('Agg')
 
 
 def index(request):
@@ -148,7 +151,7 @@ def postreviewsData(request):
 
     for data, top_data in zip(data_Queue, topseller_data):
         cleaned_tag_data = ", ".join(top_data[1])
-        if int(top_data[2]) >= 200000 :
+        if int(top_data[2]) >= 130000 :
             top_data[2] = int(top_data[2]) / 10
         # game_name 순서 일치 여부 확인
         # print(f"data_Queue: {data[1]}")
@@ -223,7 +226,20 @@ def NumOfBuyers(request):
 
 
 def main(request):
-    return render(request, "chart/main_page.html")
+    all_categories = []
+    for game in Game.objects.all():
+        all_categories.extend(game.categories.split(','))
+
+    category_counts = Counter(all_categories)
+    top_categories = category_counts.most_common(20)
+    games = []
+    games = Game.objects.all()
+
+    context = {
+        'games': games,
+        'top_categories': top_categories
+    }
+    return render(request, 'chart/main_page.html', context)
 
 
 

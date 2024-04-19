@@ -1,3 +1,41 @@
+# Popular_Steam_Chart
+We are developing Steam Trend Dashboard by tags for developers
+
+## 프로젝트 소개
+
+- 주제
+  > 개발자를 위한 게임 태그별 Trend DashBoard
+  
+- 배경 및 목표
+  > 디지털 게임 배포 플랫폼인 Steam 사이트 실시간 정보를 이용하여,
+  > 
+  > 개발자 관점에서 게임 개발에 필요한 사업성 정보, Trends 정보를 파악 
+
+## 프로젝트 구현
+
+### E-R Diagram
+![image](https://github.com/lv1turtle/Popular_Steam_Chart/assets/32154881/01d95966-48d8-4b4c-8253-06ff8bd58e48)
+
+### Selenium을 이용한 Web Crawling ( Steam - Top Sellers 100 )
+>https://store.steampowered.com/charts/topselling/global
+
+### Django - MySQL 연동, 데이터 전처리 및 적재
+![image](https://github.com/lv1turtle/Popular_Steam_Chart/assets/32154881/17cac867-02b2-4ebe-bf30-f6852da5ef85)
+
+### Chart - Highcharts with Django
+![image](https://github.com/lv1turtle/Popular_Steam_Chart/assets/32154881/5de4db39-6cac-4485-8806-f581fd91ead0)
+![image](https://github.com/lv1turtle/Popular_Steam_Chart/assets/32154881/5c0c11bb-a031-447b-ba17-e757c5b81dbc)
+
+### Chart - Matplotlib
+![image](https://github.com/lv1turtle/Popular_Steam_Chart/assets/32154881/bdacaa7f-a50a-4917-a767-08ddb0026388)
+
+### Search for games by tag_list
+![image](https://github.com/lv1turtle/Popular_Steam_Chart/assets/32154881/bf042597-f7e2-472a-8e9c-dcd33c1fe144)
+
+### Main Page
+![image](https://github.com/lv1turtle/Popular_Steam_Chart/assets/32154881/2c0201c3-2461-461b-bdc7-6343f9b0f7e2)
+
+
 ## 프로젝트 실행 방법
 
 패키지 설치
@@ -86,13 +124,9 @@
 
 - Crawl Data 받기
   - 서버 실행
+
     `python manage.py runserver`
 
   - crawling 실행
     `http://127.0.0.1:8000/test/`
 
-
-## Crawl Data 추가
-- Mysql이나 db.sqlite3에 접속만 가능하다면 문제없이 작동합니다.
-    - 단. 현재 전체 코드에서 Crawler 폴더가 상위폴더에 위치해 있는데, module로 인식을 못해서 chart 내부로 이동해주셔야 정상 작동합니다.
-        - 이 부분은 제 개인적 문제일 수도 있어서 추후에 확인 후 공지 드리겠습니다.

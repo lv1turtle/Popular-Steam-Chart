@@ -38,7 +38,9 @@
         section:nth-child(3) nav a {
             margin: 0 10px; /* 좌우 5px의 마진 적용 */
         }
-        
+        .checkbox-label.checked {
+            background-color: #90EE90; /* 체크된 상태일 때의 배경색 */
+        }
     </style>
 </head>
 <body>
@@ -57,26 +59,95 @@
             <h1 style="font-size: 36px; margin-bottom: 100px; margin-top: 0;">Top Sellers Trend Dashboard By Tag</h1>
             <div id="container" data-url="{% url 'barchart_api' %}"></div>
         </div>
+        <br>
+        <br>
+        <nav>
+            <a href="http://127.0.0.1:8000/tag/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Reviews By Tags</a>
+            <a href="http://127.0.0.1:8000/category/avg_price/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Average Price By Tags</a>
+            <a href="http://127.0.0.1:8000/buyers/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Buyers By Tags</a>
+        </nav>
     </section>
 
 
-    <section>
-        <div style="max-width: 960px; margin: 0 auto;">
-            <h2 style="font-size: 36px; margin-bottom: 20px;">차트</h2>
-            <nav>
-                <a href="http://127.0.0.1:8000/tag/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Popular Categories</a>
-                <a href="http://127.0.0.1:8000/category/avg_price/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Average Price</a>
-                <a href="http://127.0.0.1:8000/buyers/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">About Buyer</a>
-                <a href="http://127.0.0.1:8000/main/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Most Popular Games</a>
-            </nav>
-        </div>
-    </section>
-    <footer style="background-color: #333; color: #fff; padding: 20px; text-align: center;">
-        <div style="max-width: 960px; margin: 0 auto;">
-            <p>프로그래머스 2팀 1조</p>
-        </div>
-    </footer>
-    <script>
+<section>
+    <h2 style="font-size: 36px; margin-bottom: 50px; margin-top: 0;">Game Search</h2>
+    <p style="font-size: 24px;">Select Tags</p>
+    <div style="max-width: 960px; margin: 0 auto;">
+        <div class="toggles">
+            <input type="checkbox" id="showall" name="showall" style="display: none;" checked>
+            <label for="showall" class="checkbox-label" style="background-color: #90EE90; display: inline-block; margin-bottom: 5px; padding: 5px; border:3px solid #707070; cursor: pointer;">All</label>
+            {% for category, count in top_categories %}
+                <input type="checkbox" id="{{ category }}" name="category{{ forloop.counter }}" value="{{ category }}" style="display: none;">
+                <label for="{{ category }}" id="{{ category }}" class="checkbox-label" style="display: inline-block; padding: 5px; border:3px solid #707070; cursor: pointer;">{{ category }}</label>
+            {% endfor %}
+        <br>
+        <br>
+        <div class="posts">
+            <ul style="padding-left: 0;">
+                <p style="background-color: #5759c6; color: #fff; padding: 10px; margin-bottom: 5px;"><b>해당 카테고리 게임들의 인기 순위</b></p>
+                {% for game in games %}
+                    <li class="post {{ game.categories }}"style="margin-right: 50px; margin-left: 50px; background-color:  #d1f3ff; padding: 10px; margin-bottom: 5px; list-style-type: none;" > {{ forloop.counter }}. {{ game.game_name }}</li>                    
+                {% endfor %}
+            </ul>
+        </div> 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <script>
+            $(function() {
+                $('.checkbox-label').click(function(){
+                    var category = this.id;
+                    var get_current = $('.posts .post').filter(function() {
+                        return $(this).attr('class').indexOf(category) !== -1;
+                    });
+        
+                    if ($(this).is(':checked')) {
+                        get_current.show(500);
+                        $('.checkbox-label').removeClass('checked'); // 기존에 체크된 라벨의 checked 클래스 제거
+                        $(this).addClass('checked'); 
+                    } else {
+                        $('.post').not(get_current).hide(500);
+                    }
+                    
+        
+                    // 클릭된 체크박스에 'checked' 클래스를 추가하고 나머지 체크박스에서는 해당 클래스를 제거
+                $('.checkbox-label').next().removeClass('checked');
+                    if ($(this).is(':checked')) {
+                        $(this).next().addClass('checked');
+                    } else {
+                        $('input[type="checkbox"]').prop('checked', false);  // 체크가 해제되면 클래스 제거
+                    }
+                });
+                
+                $('.checkbox-label').click(function() {
+                    var checkbox = $(this).prev(); // 라벨의 이전 형제 요소, 즉 체크박스
+                    
+                    // 체크박스 상태를 토글
+                    checkbox.prop('checked', !checkbox.prop('checked')); 
+                    
+                    // 변경 이벤트 강제 발생
+                    checkbox.trigger('change'); 
+                    
+                    // 배경색 변경
+                    if (checkbox.is(':checked')) {// 기존에 체크된 라벨의 checked 클래스 제거
+                        $(this).addClass('checked'); // 현재 라벨에 checked 클래스 추가
+                    } else {
+                        $('input[type="checkbox"]').prop('checked', false);  // 체크가 해제된 경우 checked 클래스 제거
+                    }
+                });
+                
+                $('#showall').change(function() {
+                    if ($(this).is(':checked')) {
+                        $('.post').show(500);
+                        $('input[type="checkbox"]').prop('checked', false); // 모든 체크박스 해제
+                        $('.checkbox-label').removeClass('checked'); // 모든 라벨에서 'checked' 클래스 제거
+                        $(this).next().addClass('checked'); // 'Show All' 버튼에 'checked' 클래스 추가
+                    } else {
+                        $(this).next().removeClass('checked'); // 체크가 해제되면 클래스 제거
+                    }
+                });
+            }); 
+        </script>
+        <script>
         $.ajax({
             url: $("#container").attr("data-url"),
             dataType: 'json',

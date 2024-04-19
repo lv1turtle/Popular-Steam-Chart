@@ -67,17 +67,13 @@
             <h2 style="font-size: 36px; margin-bottom: 20px;">인기 TOP 10 게임의 가격</h2>
             <div id="gameChart" style="max-width: 800px; margin: 0 auto;"></div>
         </div>
-    </section>
-    <section>
-        <div style="max-width: 960px; margin: 0 auto;">
-            <h2 style="font-size: 36px; margin-bottom: 20px;">차트</h2>
-            <nav>
-                <a href="http://127.0.0.1:8000/tag/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Popular Categories</a>
-                <a href="http://127.0.0.1:8000/category/avg_price/" style="color: #ccc; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;" class="disabled">Average Price</a>
-                <a href="http://127.0.0.1:8000/buyers/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">About Buyer</a>
-                <a href="http://127.0.0.1:8000/main/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Most Popular Games</a>
-            </nav>
-        </div>
+        <br>
+        <br>
+        <nav>
+            <a href="http://127.0.0.1:8000/tag/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Reviews By Tags</a>
+            <a href="http://127.0.0.1:8000/category/avg_price/" style="color: #ccc; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;" class="disabled">Average Price By Tags</a>
+            <a href="http://127.0.0.1:8000/buyers/" style="color: #fff; text-decoration: none; padding: 10px; background-color: #555; border-radius: 5px;">Buyers By Tags</a>
+        </nav>
     </section>
     <footer style="background-color: #333; color: #fff; padding: 20px; text-align: center;">
         <div style="max-width: 960px; margin: 0 auto;">
@@ -124,14 +120,24 @@
                 });
             }
             function updateChart(data) {
+                var seriesData = data.chart_data.map(function(item) {
+                    return {
+                        name: item.name, // 시리즈의 이름으로 사용될 값
+                        y: item.y // 시리즈의 데이터 값
+                    };
+                });
                 Highcharts.chart('avgChart', {
                     chart: {
-                        type: 'pie',
+                        type: 'bar',
                         width: 800, // Pie 차트의 너비 설정
                         height: 600 // Pie 차트의 높이 설정
                     },
                     title: {
                         text: 'average price by categories'
+                    },xAxis: {
+                        categories: seriesData.map(function(item) {
+                            return item.name; // 시리즈의 이름으로 x 축 레이블 설정
+                        })
                     },
                     // value값 뒤에 붙일 값 ex) %
                     tooltip: {
@@ -148,9 +154,9 @@
                             dataLabels: [{
                                 enabled: true,
                                 distance: 20,
-                                formatter: function() {
-                                    return this.point.name
-                                }
+                                // formatter: function() {
+                                //     return this.point.name
+                                // }
                             }, {
                                 // percentage를 보여주는 기능
                                 enabled: true,
